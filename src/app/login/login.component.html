@@ -1,0 +1,25 @@
+<div class="login-container">
+  <h2>Login</h2>
+  
+  <!-- Botón para iniciar la cámara -->
+  <button (click)="startCamera()">Iniciar Cámara</button>
+  
+  <!-- Botón para capturar la foto -->
+  <button *ngIf="videoElement" (click)="capturePhoto()">Capturar Foto</button>
+
+  <!-- Mostrar imagen capturada -->
+  <div *ngIf="imageBase64">
+    <p>Foto Capturada:</p>
+    <img [src]="imageBase64" alt="Foto Capturada" width="200"/>
+  </div>
+
+  <button *ngIf="imageBase64" (click)="submitLogin()">Iniciar Sesión</button>
+
+  <!-- Mostrar mensaje de bienvenida -->
+  <p *ngIf="welcomeMessage" style="color: green; font-weight: bold;">
+    {{ welcomeMessage }}
+  </p>
+
+  <!-- Botón para detener la cámara -->
+  <button *ngIf="videoElement" (click)="stopCamera()">Detener Cámara</button>
+</div>
