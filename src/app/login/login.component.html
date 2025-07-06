@@ -1,25 +1,55 @@
-<div class="login-container">
-  <h2>Login</h2>
-  
-  <!-- Botón para iniciar la cámara -->
-  <button (click)="startCamera()">Iniciar Cámara</button>
-  
-  <!-- Botón para capturar la foto -->
-  <button *ngIf="videoElement" (click)="capturePhoto()">Capturar Foto</button>
+<div class="auth-container">
 
-  <!-- Mostrar imagen capturada -->
-  <div *ngIf="imageBase64">
-    <p>Foto Capturada:</p>
-    <img [src]="imageBase64" alt="Foto Capturada" width="200"/>
-  </div>
+  <!-- LOGIN -->
+  <section class="auth-section login" [class.active]="!showRegisterForm" [class.inactive]="showRegisterForm">
+    <h2>Iniciar Sesión</h2>
 
-  <button *ngIf="imageBase64" (click)="submitLogin()">Iniciar Sesión</button>
+    <button (click)="startCamera()" class="btn">Iniciar Cámara</button>
+    <button *ngIf="videoElement" (click)="capturePhoto()" class="btn">Capturar Foto</button>
 
-  <!-- Mostrar mensaje de bienvenida -->
-  <p *ngIf="welcomeMessage" style="color: green; font-weight: bold;">
-    {{ welcomeMessage }}
-  </p>
+    <div *ngIf="imageBase64" class="captured-photo">
+      <p>Foto Capturada:</p>
+      <img [src]="imageBase64" alt="Foto Capturada" />
+    </div>
 
-  <!-- Botón para detener la cámara -->
-  <button *ngIf="videoElement" (click)="stopCamera()">Detener Cámara</button>
+    <button *ngIf="imageBase64" (click)="submitLogin()" class="btn btn-primary">Iniciar Sesión</button>
+
+    <p *ngIf="welcomeMessage" class="welcome-message">{{ welcomeMessage }}</p>
+
+    <button *ngIf="videoElement" (click)="stopCamera()" class="btn btn-secondary">Detener Cámara</button>
+
+    <p class="toggle-text">
+      ¿No tienes cuenta?
+      <button (click)="showRegisterForm = true" class="btn-link">Regístrate</button>
+    </p>
+  </section>
+
+  <!-- REGISTRO -->
+  <section class="auth-section register" [class.active]="showRegisterForm" [class.inactive]="!showRegisterForm">
+    <h2>Registro de Usuario</h2>
+
+    <label for="username">Nombre:</label>
+    <input id="username" [(ngModel)]="registerUsername" type="text" placeholder="Ingresa tu nombre" />
+
+    <button (click)="startCamera()" class="btn btn-secondary">Iniciar Cámara</button>
+    <button *ngIf="videoElement && capturedImages.length < 3" (click)="captureRegisterPhoto()" class="btn btn-secondary">
+      Capturar Foto
+    </button>
+
+    <div *ngIf="capturedImages.length > 0" class="captured-images-container">
+      <p>Fotos capturadas ({{capturedImages.length}} / 3):</p>
+      <div class="captured-images-list">
+        <img *ngFor="let img of capturedImages; index as i" [src]="img" [alt]="'Foto ' + (i + 1)" />
+      </div>
+    </div>
+
+    <button
+      [disabled]="capturedImages.length < 3 || !registerUsername.trim()"
+      (click)="submitRegistration()"
+      class="btn btn-primary"
+    >
+      Registrar Usuario
+    </button>
+    <button (click)="cancelRegistration()" class="btn btn-link btn-cancel">Cancelar</button>
+  </section>
 </div>

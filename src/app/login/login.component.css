@@ -1,40 +1,188 @@
-.login-container {
+/* Contenedor general */
+.auth-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  min-height: 80vh;
+  padding: 40px 20px;
+  background: #f5f7fa;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  gap: 50px;
+}
+
+/* Secciones login y registro */
+.auth-section {
+  background: white;
+  width: 400px;
+  max-width: 90vw;
+  padding: 40px 30px;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.12);
+  transition: opacity 0.5s ease, transform 0.5s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Ocultar y mostrar con animación */
+.auth-section.inactive {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(50px);
+  position: absolute;
+}
+
+.auth-section.active {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateX(0);
+  position: relative;
+}
+
+/* Títulos */
+.auth-section h2 {
+  margin-bottom: 30px;
+  font-weight: 700;
+  color: #222;
   text-align: center;
-  padding: 20px;
 }
 
-.video-container {
+/* Botones */
+.btn {
   width: 100%;
-  max-width: 500px;
-  margin: 20px auto;
-  border: 2px solid #ccc;
-  border-radius: 8px;
-  padding: 10px;
-  background-color: #f0f0f0;
-}
-
-video {
-  width: 100%;
-  height: auto;
-  border-radius: 5px;
-}
-
-img {
-  margin-top: 10px;
-  border-radius: 5px;
-}
-
-button {
-  margin: 10px;
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
+  padding: 14px;
+  border-radius: 10px;
   border: none;
-  border-radius: 5px;
+  font-weight: 600;
+  font-size: 16px;
+  margin-top: 15px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+  user-select: none;
+  background-color: #ddd;
+  color: #444;
 }
 
-button:hover {
-  background-color: #0056b3;
+.btn:hover:not(:disabled) {
+  background-color: #ccc;
+}
+
+/* Botón primario */
+.btn-primary {
+  background-color: #4caf50;
+  color: white;
+  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
+}
+
+.btn-primary:hover:not(:disabled) {
+  background-color: #45a049;
+}
+
+/* Botón secundario */
+.btn-secondary {
+  background-color: #f0f0f0;
+  color: #555;
+  box-shadow: none;
+}
+
+.btn-secondary:hover {
+  background-color: #e0e0e0;
+}
+
+/* Botón link */
+.btn-link {
+  background: none;
+  border: none;
+  color: #4caf50;
+  font-weight: 700;
+  text-decoration: underline;
+  padding: 0;
+  margin-top: 20px;
+}
+
+.btn-link.btn-cancel {
+  color: #888;
+  text-decoration: none;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.btn-link.btn-cancel:hover {
+  color: #444;
+  cursor: pointer;
+}
+
+/* Input */
+input[type="text"] {
+  width: 100%;
+  padding: 14px 16px;
+  margin-bottom: 25px;
+  font-size: 16px;
+  border: 2px solid #ddd;
+  border-radius: 12px;
+  transition: border-color 0.3s ease;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #4caf50;
+}
+
+/* Foto capturada login */
+.captured-photo {
+  text-align: center;
+  margin: 15px 0;
+}
+
+.captured-photo img {
+  width: 240px;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+}
+
+/* Mensaje bienvenida */
+.welcome-message {
+  color: #2e7d32;
+  font-weight: 700;
+  font-size: 18px;
+  margin-top: 20px;
+  text-align: center;
+}
+
+/* Registro - fotos capturadas */
+.captured-images-container {
+  margin-bottom: 25px;
+}
+
+.captured-images-container p {
+  margin-bottom: 12px;
+  font-weight: 600;
+  color: #444;
+}
+
+.captured-images-list {
+  display: flex;
+  gap: 12px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.captured-images-list img {
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+  border-radius: 14px;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.1);
+  transition: transform 0.3s ease;
+}
+
+.captured-images-list img:hover {
+  transform: scale(1.05);
+}
+
+/* Texto para cambiar entre formularios */
+.toggle-text {
+  margin-top: 20px;
+  font-size: 1rem;
+  text-align: center;
+  color: #555;
 }

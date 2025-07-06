@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-
+import { FingerprintService } from '../services/fingerprint.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -9,7 +9,15 @@ export class LoginComponent {
   imageBase64: string | null = null;
   videoElement: HTMLVideoElement | null = null;
   stream: MediaStream | null = null;
-  welcomeMessage: string | null = null; // Para mostrar el mensaje de bienvenida
+  welcomeMessage: string | null = null;
+  showRegisterForm = false;
+
+
+  constructor(private fingerprintService: FingerprintService) { }
+  // Registro
+  showRegisterModal = false;
+  registerUsername: string = '';
+  capturedImages: string[] = [];
 
   startCamera() {
     const video = document.createElement('video');
@@ -37,33 +45,101 @@ export class LoginComponent {
 
   capturePhoto() {
     if (!this.videoElement) return;
-    const video = this.videoElement;
     const canvas = document.createElement('canvas');
     const context = canvas.getContext('2d');
+    canvas.width = this.videoElement.videoWidth;
+    canvas.height = this.videoElement.videoHeight;
+    context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
+    this.imageBase64 = canvas.toDataURL('image/jpeg', 0.5);
+  }
 
-    if (context) {
-      canvas.width = video.videoWidth;
-      canvas.height = video.videoHeight;
-      context.drawImage(video, 0, 0, canvas.width, canvas.height);
-      this.imageBase64 = canvas.toDataURL('image/jpeg', 0.5);
-    }
+  // Para el registro
+  captureRegisterPhoto() {
+    if (!this.videoElement || this.capturedImages.length >= 10) return;
+    const canvas = document.createElement('canvas');
+    const context = canvas.getContext('2d');
+    canvas.width = this.videoElement.videoWidth;
+    canvas.height = this.videoElement.videoHeight;
+    context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
+    const photo = canvas.toDataURL('image/jpeg', 0.5);
+    this.capturedImages.push(photo);
   }
 
   stopCamera() {
     if (this.stream) {
-      const tracks = this.stream.getTracks();
-      tracks.forEach(track => track.stop());
+      this.stream.getTracks().forEach(track => track.stop());
       this.stream = null;
     }
+    this.videoElement = null;
   }
 
-  submitLogin() {
-    // Simulamos una autenticación exitosa
-    console.log('Foto enviada al backend: ', this.imageBase64);
+  cancelRegistration() {
+    this.showRegisterForm = false;
+    this.registerUsername = '';
+    this.capturedImages = [];
+    this.stopCamera();
+  }
 
-    // Aquí puedes simular el backend respondiendo correctamente
-    setTimeout(() => {
-      this.welcomeMessage = 'Bienvenido David López';
-    }, 1000); // simula un pequeño retraso de red
+
+  submitLogin() {
+    if (!this.imageBase64) {
+      alert('Primero debes capturar una imagen.');
+      return;
+    }
+
+    const payload = { image: this.imageBase64 };
+
+    this.fingerprintService.authenticateUser(payload).subscribe({
+      next: (response) => {
+        if (response.success) {
+          this.welcomeMessage = `Bienvenido ${response.username}`;
+        } else {
+          alert('No se pudo autenticar. Intenta nuevamente.');
+        }
+      },
+      error: (err) => {
+        console.error('Error al autenticar:', err);
+        alert('Error al autenticar. Verifica el backend.');
+      }
+    });
+  }
+
+  // Métodos para el modal
+  openRegistration() {
+    this.showRegisterModal = true;
+    this.registerUsername = '';
+    this.capturedImages = [];
+  }
+
+  closeRegistration() {
+    this.showRegisterModal = false;
+    this.stopCamera();
+  }
+
+  canSubmitRegister(): boolean {
+    return this.registerUsername.trim().length > 0 && this.capturedImages.length >= 3;
+  }
+
+  submitRegistration() {
+    if (!this.canSubmitRegister()) {
+      alert('Por favor, completa el formulario con al menos 3 imágenes.');
+      return;
+    }
+
+    const payload = {
+      username: this.registerUsername,
+      images: this.capturedImages
+    };
+
+    this.fingerprintService.registerUser(payload).subscribe({
+      next: (response) => {
+        alert(`Usuario ${this.registerUsername} registrado con éxito!`);
+        this.closeRegistration();
+      },
+      error: (err) => {
+        console.error('Error registrando usuario:', err);
+        alert('Error al registrar el usuario. Intenta nuevamente.');
+      }
+    });
   }
 }
