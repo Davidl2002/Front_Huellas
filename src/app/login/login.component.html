@@ -7,8 +7,13 @@
     <button (click)="startCamera()" class="btn">Iniciar Cámara</button>
     <button *ngIf="videoElement" (click)="capturePhoto()" class="btn">Capturar Foto</button>
 
+    <!-- SUBIR IMAGEN para login -->
+    <label for="uploadLoginImage" class="btn btn-secondary">Subir Imagen</label>
+    <input id="uploadLoginImage" type="file" accept="image/*" (change)="onLoginImageUpload($event)" hidden />
+
+    <!-- Mostrar imagen capturada o subida -->
     <div *ngIf="imageBase64" class="captured-photo">
-      <p>Foto Capturada:</p>
+      <p>Foto Capturada o Subida:</p>
       <img [src]="imageBase64" alt="Foto Capturada" />
     </div>
 
@@ -32,22 +37,23 @@
     <input id="username" [(ngModel)]="registerUsername" type="text" placeholder="Ingresa tu nombre" />
 
     <button (click)="startCamera()" class="btn btn-secondary">Iniciar Cámara</button>
-    <button *ngIf="videoElement && capturedImages.length < 3" (click)="captureRegisterPhoto()" class="btn btn-secondary">
+    <button *ngIf="videoElement && capturedImages.length < 10" (click)="captureRegisterPhoto()" class="btn btn-secondary">
       Capturar Foto
     </button>
 
+    <!-- SUBIR IMAGEN para registro -->
+    <label for="uploadRegisterImage" class="btn btn-secondary">Subir Imagen</label>
+    <input id="uploadRegisterImage" type="file" accept="image/*" (change)="onRegisterImageUpload($event)" hidden />
+
+    <!-- Mostrar imágenes capturadas o subidas -->
     <div *ngIf="capturedImages.length > 0" class="captured-images-container">
-      <p>Fotos capturadas ({{capturedImages.length}} / 3):</p>
+      <p>Fotos capturadas/subidas ({{capturedImages.length}} / 10):</p>
       <div class="captured-images-list">
         <img *ngFor="let img of capturedImages; index as i" [src]="img" [alt]="'Foto ' + (i + 1)" />
       </div>
     </div>
 
-    <button
-      [disabled]="capturedImages.length < 3 || !registerUsername.trim()"
-      (click)="submitRegistration()"
-      class="btn btn-primary"
-    >
+    <button [disabled]="capturedImages.length < 3 || !registerUsername.trim()" (click)="submitRegistration()" class="btn btn-primary">
       Registrar Usuario
     </button>
     <button (click)="cancelRegistration()" class="btn btn-link btn-cancel">Cancelar</button>

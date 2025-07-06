@@ -186,3 +186,21 @@ input[type="text"]:focus {
   text-align: center;
   color: #555;
 }
+
+/* Ajustar la posición del botón de subir imagen en login y registro para que no se superponga */
+label[for="uploadLoginImage"], label[for="uploadRegisterImage"] {
+  width: 100%; /* Asegura que el label tenga el mismo tamaño que los botones */
+  padding: 14px;
+  display: inline-block;
+  cursor: pointer;
+  background-color: #f0f0f0;
+  color: #555;
+  text-align: center;
+  border-radius: 10px;
+  margin-top: 15px; /* Espacio adecuado entre botones */
+  transition: background-color 0.3s ease;
+}
+
+label[for="uploadLoginImage"]:hover, label[for="uploadRegisterImage"]:hover {
+  background-color: #e0e0e0;
+}

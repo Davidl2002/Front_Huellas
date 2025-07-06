@@ -142,4 +142,29 @@ export class LoginComponent {
       }
     });
   }
+
+onLoginImageUpload(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0]) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      this.imageBase64 = reader.result as string;
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+onRegisterImageUpload(event: Event): void {
+  const input = event.target as HTMLInputElement;
+  if (input.files && input.files[0] && this.capturedImages.length < 10) {
+    const reader = new FileReader();
+    reader.onload = () => {
+      const base64 = reader.result as string;
+      this.capturedImages.push(base64);
+    };
+    reader.readAsDataURL(input.files[0]);
+  }
+}
+
+
 }
