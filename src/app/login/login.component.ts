@@ -52,9 +52,12 @@ export class LoginComponent {
     canvas.height = this.videoElement.videoHeight;
     context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
     this.imageBase64 = canvas.toDataURL('image/jpeg', 0.5);
+
+    // Elimina el prefijo 'data:image/jpeg;base64,' antes de enviarlo
+    const base64Data = this.imageBase64.split(',')[1];
+    this.imageBase64 = base64Data;
   }
 
-  // Para el registro
   captureRegisterPhoto() {
     if (!this.videoElement || this.capturedImages.length >= 10) return;
     const canvas = document.createElement('canvas');
@@ -63,7 +66,10 @@ export class LoginComponent {
     canvas.height = this.videoElement.videoHeight;
     context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
     const photo = canvas.toDataURL('image/jpeg', 0.5);
-    this.capturedImages.push(photo);
+
+    // Elimina el prefijo 'data:image/jpeg;base64,' antes de enviarlo
+    const base64Data = photo.split(',')[1];
+    this.capturedImages.push(base64Data);
   }
 
   stopCamera() {
