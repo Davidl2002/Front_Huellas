@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FingerprintService } from '../services/fingerprint.service';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -12,8 +13,8 @@ export class LoginComponent {
   welcomeMessage: string | null = null;
   showRegisterForm = false;
 
-
   constructor(private fingerprintService: FingerprintService) { }
+
   // Registro
   showRegisterModal = false;
   registerUsername: string = '';
@@ -80,7 +81,6 @@ export class LoginComponent {
     this.stopCamera();
   }
 
-
   submitLogin() {
     if (!this.imageBase64) {
       alert('Primero debes capturar una imagen.');
@@ -131,6 +131,17 @@ export class LoginComponent {
       images: this.capturedImages
     };
 
+    // Verifica si el JSON está bien formado
+    try {
+      JSON.stringify(payload); // Verifica si se puede convertir a JSON
+    } catch (error) {
+      console.error('Error al formar el JSON:', error);
+      alert('Hubo un error al formar los datos. Por favor, verifica la entrada.');
+      return;
+    }
+
+    console.log('Enviando al backend:', payload);
+
     this.fingerprintService.registerUser(payload).subscribe({
       next: (response) => {
         alert(`Usuario ${this.registerUsername} registrado con éxito!`);
@@ -143,28 +154,26 @@ export class LoginComponent {
     });
   }
 
-onLoginImageUpload(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0]) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      this.imageBase64 = reader.result as string;
-    };
-    reader.readAsDataURL(input.files[0]);
+  onLoginImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        this.imageBase64 = reader.result as string;
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
   }
-}
 
-onRegisterImageUpload(event: Event): void {
-  const input = event.target as HTMLInputElement;
-  if (input.files && input.files[0] && this.capturedImages.length < 10) {
-    const reader = new FileReader();
-    reader.onload = () => {
-      const base64 = reader.result as string;
-      this.capturedImages.push(base64);
-    };
-    reader.readAsDataURL(input.files[0]);
+  onRegisterImageUpload(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    if (input.files && input.files[0] && this.capturedImages.length < 10) {
+      const reader = new FileReader();
+      reader.onload = () => {
+        const base64 = reader.result as string;
+        this.capturedImages.push(base64);
+      };
+      reader.readAsDataURL(input.files[0]);
+    }
   }
-}
-
-
 }
