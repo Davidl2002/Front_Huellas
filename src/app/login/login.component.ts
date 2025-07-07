@@ -53,9 +53,7 @@ export class LoginComponent {
     context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
     this.imageBase64 = canvas.toDataURL('image/jpeg', 0.5);
 
-    // Elimina el prefijo 'data:image/jpeg;base64,' antes de enviarlo
-    const base64Data = this.imageBase64.split(',')[1];
-    this.imageBase64 = base64Data;
+    // Aquí mantenemos el prefijo para la vista previa
   }
 
   captureRegisterPhoto() {
@@ -67,10 +65,10 @@ export class LoginComponent {
     context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
     const photo = canvas.toDataURL('image/jpeg', 0.5);
 
-    // Elimina el prefijo 'data:image/jpeg;base64,' antes de enviarlo
-    const base64Data = photo.split(',')[1];
-    this.capturedImages.push(base64Data);
+    // Aquí mantenemos el prefijo para la vista previa
+    this.capturedImages.push(photo);
   }
+
 
   stopCamera() {
     if (this.stream) {
@@ -132,9 +130,10 @@ export class LoginComponent {
       return;
     }
 
+    // Elimina el prefijo solo cuando prepares el payload para el backend
     const payload = {
       username: this.registerUsername,
-      images: this.capturedImages
+      images: this.capturedImages.map(image => image.split(',')[1])  // Eliminar prefijo
     };
 
     // Verifica si el JSON está bien formado
@@ -146,7 +145,15 @@ export class LoginComponent {
       return;
     }
 
-    console.log('Enviando al backend:', payload);
+    // Log para revisar el payload antes de enviarlo
+    console.log('Payload que se enviará al backend:', payload);
+
+    // Verificación de la longitud de las imágenes Base64
+    payload.images.forEach((image, index) => {
+      console.log(`Imagen ${index + 1}:`);
+      console.log(`Longitud de la cadena Base64: ${image.length}`);
+      console.log(`Primeros 100 caracteres de la imagen Base64: ${image.substring(0, 100)}`);
+    });
 
     this.fingerprintService.registerUser(payload).subscribe({
       next: (response) => {
@@ -177,9 +184,16 @@ export class LoginComponent {
       const reader = new FileReader();
       reader.onload = () => {
         const base64 = reader.result as string;
+
+        // Aquí mantenemos el prefijo para la vista previa
         this.capturedImages.push(base64);
+
+        // Verificar vista previa
+        console.log("Imagen cargada para vista previa:", base64);
       };
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+
 }
