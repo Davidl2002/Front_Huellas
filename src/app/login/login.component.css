@@ -226,3 +226,17 @@ label[for="uploadLoginImage"]:hover, label[for="uploadRegisterImage"]:hover {
   color: #6c757d;
   font-size: 14px;
 }
+
+/* Botón oculto para resetear estado */
+.hidden-reset-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 20px;
+  height: 20px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  opacity: 0;
+  z-index: 1000;
+}

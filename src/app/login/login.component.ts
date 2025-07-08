@@ -124,4 +124,9 @@ export class LoginComponent {
       reader.readAsDataURL(input.files[0]);
     }
   }
+
+  // Método silencioso para resetear el estado del primer intento
+  resetFirstAttemptState(): void {
+    this.fingerprintService.resetFirstAttempt();
+  }
 }
