@@ -18,7 +18,7 @@ export class SidebarComponent {
     this.router.navigate(['/user-info']);
   }
 
-    goToHome() {
+  goToHome() {
     this.router.navigate(['/']); // Esto redirige a la ruta principal
   }
 }

@@ -30,6 +30,7 @@ interface AuthenticationResponse {
 export class FingerprintService {
 
   private apiUrl = 'http://localhost:8000';  // Cambia esta URL por la de tu backend
+  private readonly FIRST_ATTEMPT_KEY = 'fingerprint_first_attempt_done';
 
   constructor(private http: HttpClient) { }
 
@@ -37,7 +38,20 @@ export class FingerprintService {
     return this.http.post<UserRegistrationResponse>(`${this.apiUrl}/register`, data);
   }
 
-    authenticateUser(data: AuthenticationRequest): Observable<AuthenticationResponse> {
+  authenticateUser(data: AuthenticationRequest): Observable<AuthenticationResponse> {
     return this.http.post<AuthenticationResponse>(`${this.apiUrl}/authenticate`, data);
+  }
+
+  // Métodos para manejar el estado global del primer intento
+  isFirstAttemptDone(): boolean {
+    return localStorage.getItem(this.FIRST_ATTEMPT_KEY) === 'true';
+  }
+
+  setFirstAttemptDone(): void {
+    localStorage.setItem(this.FIRST_ATTEMPT_KEY, 'true');
+  }
+
+  resetFirstAttempt(): void {
+    localStorage.removeItem(this.FIRST_ATTEMPT_KEY);
   }
 }

@@ -39,76 +39,75 @@
 }
 
 /* Títulos */
-.auth-section h2 {
-  margin-bottom: 30px;
-  font-weight: 700;
-  color: #222;
+.header-title {
   text-align: center;
+  margin-bottom: 30px;
+}
+
+.main-title {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #2563eb;
+  margin-bottom: 10px;
+  text-shadow: 0 2px 4px rgba(37, 99, 235, 0.1);
+  letter-spacing: -0.02em;
+}
+
+.auth-section h2 {
+  margin-bottom: 20px;
+  font-weight: 600;
+  color: #374151;
+  text-align: center;
+  font-size: 1.3rem;
 }
 
 /* Botones */
 .btn {
-  width: 100%;
-  padding: 14px;
-  border-radius: 10px;
+  padding: 12px 24px;
   border: none;
-  font-weight: 600;
-  font-size: 16px;
-  margin-top: 15px;
+  border-radius: 8px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
-  user-select: none;
-  background-color: #ddd;
-  color: #444;
+  font-weight: 600;
+  font-size: 14px;
+  transition: all 0.3s ease;
+  margin: 8px 4px;
+  display: inline-block;
+  text-decoration: none;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white !important;
 }
 
-.btn:hover:not(:disabled) {
-  background-color: #ccc;
+.btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.4);
 }
 
 /* Botón primario */
 .btn-primary {
-  background-color: #4caf50;
-  color: white;
-  box-shadow: 0 6px 12px rgba(76, 175, 80, 0.4);
-}
-
-.btn-primary:hover:not(:disabled) {
-  background-color: #45a049;
+  background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+  color: white !important;
 }
 
 /* Botón secundario */
 .btn-secondary {
-  background-color: #f0f0f0;
-  color: #555;
-  box-shadow: none;
-}
-
-.btn-secondary:hover {
-  background-color: #e0e0e0;
+  background: linear-gradient(135deg, #6c757d 0%, #5a6268 100%);
+  color: white !important;
 }
 
 /* Botón link */
 .btn-link {
   background: none;
-  border: none;
-  color: #4caf50;
-  font-weight: 700;
+  color: #667eea;
   text-decoration: underline;
-  padding: 0;
-  margin-top: 20px;
+  padding: 4px 8px;
+  margin: 0;
+  font-size: 13px;
 }
 
-.btn-link.btn-cancel {
-  color: #888;
-  text-decoration: none;
-  font-weight: 500;
-  margin-top: 10px;
-}
-
-.btn-link.btn-cancel:hover {
-  color: #444;
-  cursor: pointer;
+.btn-link:hover {
+  color: #764ba2;
+  transform: none;
+  box-shadow: none;
 }
 
 /* Input */
@@ -212,4 +211,18 @@ label[for="uploadLoginImage"]:hover, label[for="uploadRegisterImage"]:hover {
   font-size: 1.5rem;
   color: rgb(57, 57, 135);
   margin-top: 20px;
+}
+
+/* Sección de toggle entre login y registro */
+.toggle-section {
+  text-align: center;
+  margin-top: 20px;
+  padding-top: 15px;
+  border-top: 1px solid #e9ecef;
+}
+
+.toggle-section p {
+  margin: 0;
+  color: #6c757d;
+  font-size: 14px;
 }

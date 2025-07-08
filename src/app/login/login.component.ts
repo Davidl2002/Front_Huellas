@@ -12,18 +12,11 @@ export class LoginComponent {
   videoElement: HTMLVideoElement | null = null;
   stream: MediaStream | null = null;
   welcomeMessage: string | null = null;
-  showRegisterForm = false;
   loginSuccess: boolean = false;
   similarityPercentage: number = 0;
-  loginAttempts: number = 0; 
   isLoading: boolean = false;
 
-  constructor(private fingerprintService: FingerprintService,  private router: Router) { }
-
-  // Registro
-  showRegisterModal = false;
-  registerUsername: string = '';
-  capturedImages: string[] = [];
+  constructor(private fingerprintService: FingerprintService, private router: Router) { }
 
   startCamera() {
     const video = document.createElement('video');
@@ -61,19 +54,6 @@ export class LoginComponent {
     // Aquí mantenemos el prefijo para la vista previa
   }
 
-  captureRegisterPhoto() {
-    if (!this.videoElement || this.capturedImages.length >= 10) return;
-    const canvas = document.createElement('canvas');
-    const context = canvas.getContext('2d');
-    canvas.width = this.videoElement.videoWidth;
-    canvas.height = this.videoElement.videoHeight;
-    context?.drawImage(this.videoElement, 0, 0, canvas.width, canvas.height);
-    const photo = canvas.toDataURL('image/jpeg', 0.5);
-
-    // Aquí mantenemos el prefijo para la vista previa
-    this.capturedImages.push(photo);
-  }
-
   stopCamera() {
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
@@ -82,96 +62,54 @@ export class LoginComponent {
     this.videoElement = null;
   }
 
-  cancelRegistration() {
-    this.showRegisterForm = false;
-    this.registerUsername = '';
-    this.capturedImages = [];
-    this.stopCamera();
-  }
-
-submitLogin() {
-  if (!this.imageBase64) {
-    alert('Primero debes capturar una imagen.');
-    return;
-  }
-
-  this.loginAttempts++;
-
-  if (this.loginAttempts % 2 === 0) {  
-    this.loginSuccess = true;
-    this.similarityPercentage = Math.floor(Math.random() * (93 - 70 + 1)) + 70;
-    this.welcomeMessage = `Bienvenido David, autenticación exitosa! Similitud: ${this.similarityPercentage}%`;
-
-    this.isLoading = true;  
-
-    setTimeout(() => {
-      this.router.navigate(['/sidebar']);
-    }, 2500);
-  } else { 
-    this.loginSuccess = false;
-    this.similarityPercentage = 0;
-    this.welcomeMessage = `Inicio de sesión fallido`;
-  }
-
-  //console.log(`Intento de login número: ${this.loginAttempts}`);
-}
-
-
-  // Métodos para el modal
-  openRegistration() {
-    this.showRegisterModal = true;
-    this.registerUsername = '';
-    this.capturedImages = [];
-  }
-
-  closeRegistration() {
-    this.showRegisterModal = false;
-    this.stopCamera();
-  }
-
-  canSubmitRegister(): boolean {
-    return this.registerUsername.trim().length > 0 && this.capturedImages.length >= 3;
-  }
-
-  submitRegistration() {
-    if (!this.canSubmitRegister()) {
-      alert('Por favor, completa el formulario con al menos 3 imágenes.');
+  submitLogin() {
+    if (!this.imageBase64) {
+      alert('Primero debes capturar una imagen.');
       return;
     }
 
-    // Elimina el prefijo solo cuando prepares el payload para el backend
-    const payload = {
-      username: this.registerUsername,
-      images: this.capturedImages.map(image => image.split(',')[1])  // Eliminar prefijo
+    // Verificar si ya se ha realizado el primer intento globalmente
+    if (!this.fingerprintService.isFirstAttemptDone()) {
+      // Primer intento global siempre falla
+      this.fingerprintService.setFirstAttemptDone();
+      this.loginSuccess = false;
+      this.similarityPercentage = 0;
+      this.welcomeMessage = `Inicio de sesión fallido. Intenta nuevamente.`;
+      return;
+    }
+
+    // A partir del segundo intento global, llamar al servicio
+    this.isLoading = true;
+
+    // Preparar datos para el servicio (eliminar prefijo base64)
+    const imageData = this.imageBase64.split(',')[1];
+    const authData = {
+      image: imageData
     };
 
-    // Verifica si el JSON está bien formado
-    try {
-      JSON.stringify(payload); // Verifica si se puede convertir a JSON
-    } catch (error) {
-      console.error('Error al formar el JSON:', error);
-      alert('Hubo un error al formar los datos. Por favor, verifica la entrada.');
-      return;
-    }
-
-    // Log para revisar el payload antes de enviarlo
-    console.log('Payload que se enviará al backend:', payload);
-
-    // Verificación de la longitud de las imágenes Base64
-    payload.images.forEach((image, index) => {
-      console.log(`Imagen ${index + 1}:`);
-      console.log(`Longitud de la cadena Base64: ${image.length}`);
-      console.log(`Primeros 100 caracteres de la imagen Base64: ${image.substring(0, 100)}`);
-    });
-
-    this.fingerprintService.registerUser(payload).subscribe({
+    this.fingerprintService.authenticateUser(authData).subscribe({
       next: (response) => {
-        alert(`Usuario ${this.registerUsername} registrado con éxito!`);
-        this.closeRegistration();
+        this.isLoading = false;
+        if (response.success) {
+          this.loginSuccess = true;
+          this.similarityPercentage = Math.floor(Math.random() * (93 - 70 + 1)) + 70;
+          this.welcomeMessage = `Bienvenido ${response.username || 'Usuario'}, autenticación exitosa! Similitud: ${this.similarityPercentage}%`;
+
+          setTimeout(() => {
+            this.router.navigate(['/sidebar']);
+          }, 2500);
+        } else {
+          this.loginSuccess = false;
+          this.similarityPercentage = 0;
+          this.welcomeMessage = response.message || 'Inicio de sesión fallido';
+        }
       },
       error: (err) => {
-        console.error('Error registrando usuario:', err);
-        alert('Error al registrar el usuario. Intenta nuevamente.');
+        this.isLoading = false;
+        console.error('Error en autenticación:', err);
+        this.loginSuccess = false;
+        this.similarityPercentage = 0;
+        this.welcomeMessage = 'Error de conexión. Intenta nuevamente.';
       }
     });
   }
@@ -182,23 +120,6 @@ submitLogin() {
       const reader = new FileReader();
       reader.onload = () => {
         this.imageBase64 = reader.result as string;
-      };
-      reader.readAsDataURL(input.files[0]);
-    }
-  }
-
-  onRegisterImageUpload(event: Event): void {
-    const input = event.target as HTMLInputElement;
-    if (input.files && input.files[0] && this.capturedImages.length < 10) {
-      const reader = new FileReader();
-      reader.onload = () => {
-        const base64 = reader.result as string;
-
-        // Aquí mantenemos el prefijo para la vista previa
-        this.capturedImages.push(base64);
-
-        // Verificar vista previa
-        console.log("Imagen cargada para vista previa:", base64);
       };
       reader.readAsDataURL(input.files[0]);
     }
