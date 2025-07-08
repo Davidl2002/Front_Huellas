@@ -1,13 +1,9 @@
-<mat-sidenav-container class="sidenav-container">
-  <mat-sidenav mode="side" opened>
-    <mat-nav-list>
-      <a mat-list-item href="#">Inicio</a>
-      <a mat-list-item href="#">Usuarios</a>
-      <a mat-list-item href="#">Recursos</a>
-    </mat-nav-list>
-  </mat-sidenav>
-
-  <mat-sidenav-content>
-    <router-outlet></router-outlet>
-  </mat-sidenav-content>
-</mat-sidenav-container>
+<div class="sidebar">
+  <h3>Menú</h3>
+  <ul>
+    <li><button (click)="goToInfo()">Información del Sistema</button></li>
+    <li><button (click)="goToUserInfo()">Información Técnica</button></li>
+    <!-- Botón para ir a la página principal -->
+    <li><button (click)="goToHome()">Cerrar Sesión</button></li>
+  </ul>
+</div>

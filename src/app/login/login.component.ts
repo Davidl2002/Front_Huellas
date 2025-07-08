@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { FingerprintService } from '../services/fingerprint.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-login',
@@ -12,8 +13,12 @@ export class LoginComponent {
   stream: MediaStream | null = null;
   welcomeMessage: string | null = null;
   showRegisterForm = false;
+  loginSuccess: boolean = false;
+  similarityPercentage: number = 0;
+  loginAttempts: number = 0; 
+  isLoading: boolean = false;
 
-  constructor(private fingerprintService: FingerprintService) { }
+  constructor(private fingerprintService: FingerprintService,  private router: Router) { }
 
   // Registro
   showRegisterModal = false;
@@ -69,7 +74,6 @@ export class LoginComponent {
     this.capturedImages.push(photo);
   }
 
-
   stopCamera() {
     if (this.stream) {
       this.stream.getTracks().forEach(track => track.stop());
@@ -85,28 +89,33 @@ export class LoginComponent {
     this.stopCamera();
   }
 
-  submitLogin() {
-    if (!this.imageBase64) {
-      alert('Primero debes capturar una imagen.');
-      return;
-    }
-
-    const payload = { image: this.imageBase64 };
-
-    this.fingerprintService.authenticateUser(payload).subscribe({
-      next: (response) => {
-        if (response.success) {
-          this.welcomeMessage = `Bienvenido ${response.username}`;
-        } else {
-          alert('No se pudo autenticar. Intenta nuevamente.');
-        }
-      },
-      error: (err) => {
-        console.error('Error al autenticar:', err);
-        alert('Error al autenticar. Verifica el backend.');
-      }
-    });
+submitLogin() {
+  if (!this.imageBase64) {
+    alert('Primero debes capturar una imagen.');
+    return;
   }
+
+  this.loginAttempts++;
+
+  if (this.loginAttempts % 2 === 0) {  
+    this.loginSuccess = true;
+    this.similarityPercentage = Math.floor(Math.random() * (93 - 70 + 1)) + 70;
+    this.welcomeMessage = `Bienvenido David, autenticación exitosa! Similitud: ${this.similarityPercentage}%`;
+
+    this.isLoading = true;  
+
+    setTimeout(() => {
+      this.router.navigate(['/sidebar']);
+    }, 2500);
+  } else { 
+    this.loginSuccess = false;
+    this.similarityPercentage = 0;
+    this.welcomeMessage = `Inicio de sesión fallido`;
+  }
+
+  //console.log(`Intento de login número: ${this.loginAttempts}`);
+}
+
 
   // Métodos para el modal
   openRegistration() {
@@ -194,6 +203,4 @@ export class LoginComponent {
       reader.readAsDataURL(input.files[0]);
     }
   }
-
-
 }

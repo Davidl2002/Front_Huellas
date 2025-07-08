@@ -204,3 +204,12 @@ label[for="uploadLoginImage"], label[for="uploadRegisterImage"] {
 label[for="uploadLoginImage"]:hover, label[for="uploadRegisterImage"]:hover {
   background-color: #e0e0e0;
 }
+
+.loading-message {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 1.5rem;
+  color: rgb(57, 57, 135);
+  margin-top: 20px;
+}

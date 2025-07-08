@@ -19,14 +19,18 @@
 
     <button *ngIf="imageBase64" (click)="submitLogin()" class="btn btn-primary">Iniciar Sesión</button>
 
-    <p *ngIf="welcomeMessage" class="welcome-message">{{ welcomeMessage }}</p>
+    <!-- Mensaje de éxito o fallo -->
+    <p *ngIf="welcomeMessage" class="welcome-message" [ngStyle]="{ 'color': loginSuccess ? 'green' : 'red' }">
+      {{ welcomeMessage }}
+    </p>
+
+    <!-- Mostrar mensaje de carga -->
+    <div *ngIf="isLoading" class="loading-message">
+      <p>Cargando...</p>
+    </div>
 
     <button *ngIf="videoElement" (click)="stopCamera()" class="btn btn-secondary">Detener Cámara</button>
 
-    <p class="toggle-text">
-      ¿No tienes cuenta?
-      <button (click)="showRegisterForm = true" class="btn-link">Regístrate</button>
-    </p>
   </section>
 
   <!-- REGISTRO -->

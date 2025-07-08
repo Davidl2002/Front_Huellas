@@ -12,12 +12,16 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatListModule } from '@angular/material/list';
 import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
+import { InfoComponent } from './info/info.component';
+import { UserInfoComponent } from './user-info/user-info.component';
 @NgModule({
   declarations: [
     AppComponent,
     LoginComponent,
     DashboardComponent,
-    SidebarComponent
+    SidebarComponent,
+    InfoComponent,
+    UserInfoComponent
   ],
   imports: [
     BrowserModule,

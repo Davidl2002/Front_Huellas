@@ -1,1 +1,9 @@
-<router-outlet></router-outlet>
+<div class="app-container">
+  <!-- Sidebar solo visible si la ruta no es la principal -->
+  <app-sidebar *ngIf="shouldShowSidebar()"></app-sidebar>
+
+  <!-- Aquí se carga el contenido de las rutas, sin afectar al Sidebar -->
+  <div class="main-content">
+    <router-outlet></router-outlet> <!-- El contenido de la ruta se carga aquí -->
+  </div>
+</div>

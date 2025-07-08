@@ -1,0 +1,9 @@
+/* Sidebar visible solo si el usuario está autenticado */
+.sidebar-hidden {
+  margin-left: 0;  /* No hay espacio para el Sidebar */
+}
+
+/* Cuando el Sidebar está visible */
+.content {
+  margin-left: 250px;  /* Ajusta el margen del contenido para mostrar el Sidebar */
+}

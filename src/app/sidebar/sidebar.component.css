@@ -1,0 +1,70 @@
+/* Contenedor principal del sidebar y contenido */
+.sidebar {
+  width: 250px; /* Ancho del sidebar */
+  position: fixed; /* Fijar el sidebar */
+  top: 0;
+  left: 0;
+  height: 100%; /* Ocupa toda la altura de la pantalla */
+  background-color: #333; /* Fondo oscuro */
+  color: white;
+  padding-top: 20px; /* Espacio superior */
+  box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Sombra para darle profundidad */
+}
+
+.sidebar h3 {
+  text-align: center;
+  color: #fff;
+}
+
+.sidebar ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sidebar ul li {
+  padding: 10px;
+  text-align: center;
+}
+
+.sidebar ul li button {
+  width: 100%;
+  background-color: #444;
+  color: white;
+  border: none;
+  padding: 10px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.sidebar ul li button:hover {
+  background-color: #555;
+}
+
+.content {
+  margin-left: 250px; /* Dejamos espacio para el sidebar */
+  padding: 20px;
+  background-color: #f5f7fa;
+  min-height: 100vh; /* Que el contenido siempre ocupe toda la pantalla */
+}
+
+.content h2 {
+  color: #333;
+}
+
+.logout-btn {
+  background-color: #f44336; /* Rojo para el botón de cerrar sesión */
+  color: white;
+  border: none;
+  padding: 10px;
+  width: 100%;
+  text-align: left;
+  cursor: pointer;
+  font-size: 16px;
+  border-radius: 4px;
+  margin-top: 10px;
+}
+
+.logout-btn:hover {
+  background-color: #d32f2f; /* Rojo más oscuro al pasar el mouse */
+}
